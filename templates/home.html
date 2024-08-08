@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}Home - Netflix Clone{% endblock %}
+{% block content %}
+<div id="featuredCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-inner">
+        {% for movie in movies|slice:":5" %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img src="{{ movie.thumbnail.url }}" class="d-block w-100" alt="{{ movie.title }}">
+            <div class="carousel-caption d-none d-md-block">
+                <h2>{{ movie.title }}</h2>
+                <p>{{ movie.description|truncatewords:30 }}</p>
+                <a href="{% url 'movie_detail' movie.id %}" class="btn btn-lg btn-primary">
+                    <i class="fas fa-play me-2"></i>Watch Now
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Trending Now</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mb-5">
+        {% for movie in movies|slice:":10" %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ movie.thumbnail.url }}" class="card-img-top" alt="{{ movie.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text">{{ movie.description|truncatewords:15 }}</p>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i>Watch Now
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="mb-4">All Movies</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+        {% for movie in movies %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ movie.thumbnail.url }}" class="card-img-top" alt="{{ movie.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text">{{ movie.description|truncatewords:15 }}</p>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary">
+                        <i class="fas fa-play me-2"></i>Watch Now
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .carousel-caption {
+        bottom: 20%;
+        text-align: left;
+        max-width: 550px;
+        left: 15%;
+    }
+    .carousel-caption h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+    }
+    .carousel-caption p {
+        font-size: 1.2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+    @media (max-width: 768px) {
+        .carousel-caption {
+            bottom: 10%;
+        }
+        .carousel-caption h2 {
+            font-size: 1.8rem;
+        }
+        .carousel-caption p {
+            font-size: 1rem;
+        }
+    }
+    .carousel-item {
+        transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+    }
+    .carousel-item:not(.active) {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: blur(5px);
+    }
+    .carousel-item.active {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+    .carousel-fade .active.carousel-item-start,
+    .carousel-fade .active.carousel-item-end {
+        transition: opacity 0s 0.6s;
+    }
+    @keyframes kenburns {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }
+    .carousel-item img {
+        animation: kenburns 10s ease-in-out infinite alternate;
+    }
+</style>
+{% endblock %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var carousel = document.querySelector('#featuredCarousel');
+        var carouselInstance = new bootstrap.Carousel(carousel, {
+            interval: 5000,
+            ride: 'carousel',
+            wrap: true
+        });
+
+        carousel.addEventListener('slide.bs.carousel', function (e) {
+            var activeItem = this.querySelector('.active');
+            var nextItem = e.relatedTarget;
+            
+            activeItem.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out, filter 0.6s ease-in-out';
+            nextItem.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out, filter 0.6s ease-in-out';
+            
+            activeItem.style.opacity = '0';
+            activeItem.style.transform = 'scale(0.95)';
+            activeItem.style.filter = 'blur(5px)';
+            
+            nextItem.style.opacity = '1';
+            nextItem.style.transform = 'scale(1)';
+            nextItem.style.filter = 'blur(0)';
+        });
+    });
+</script>
