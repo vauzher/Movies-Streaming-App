@@ -1,48 +1,26 @@
 from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from .models import Movie
+from django.db.models import F
+from django.utils import timezone
+from datetime import timedelta
+from django.shortcuts import render
 
 class HomeView(ListView):
     model = Movie
     template_name = 'home.html'
     context_object_name = 'movies'
 
-    def render_to_response(self, context, **response_kwargs):
-        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            movies = context['movies']
-            data = {
-                'movies': [
-                    {
-                        'id': movie.id,
-                        'title': movie.title,
-                        'description': movie.description,
-                        'thumbnail': movie.thumbnail.url if movie.thumbnail else None,
-                    } for movie in movies
-                ]
-            }
-            return JsonResponse(data)
-        return super().render_to_response(context, **response_kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['trending_movies'] = get_trending_movies()
+        return context
+
 
 class MovieDetailView(DetailView):
     model = Movie
     template_name = 'movie_detail.html'
     context_object_name = 'movie'
-
-    def render_to_response(self, context, **response_kwargs):
-        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            movie = context['movie']
-            data = {
-                'id': movie.id,
-                'title': movie.title,
-                'description': movie.description,
-                'thumbnail': movie.thumbnail.url if movie.thumbnail else None,
-                'release_date': movie.release_date.isoformat(),
-                'genres': [genre.name for genre in movie.genres.all()],
-                'average_rating': movie.average_rating,
-                'video_link': movie.video_link,
-            }
-            return JsonResponse(data)
-        return super().render_to_response(context, **response_kwargs)
 
 class TrendingMoviesView(ListView):
     model = Movie
@@ -52,19 +30,12 @@ class TrendingMoviesView(ListView):
     def get_queryset(self):
         return Movie.objects.order_by('-average_rating')[:10]
 
-    def render_to_response(self, context, **response_kwargs):
-        if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            trending_movies = context['trending_movies']
-            data = {
-                'trending_movies': [
-                    {
-                        'id': movie.id,
-                        'title': movie.title,
-                        'description': movie.description,
-                        'thumbnail': movie.thumbnail.url if movie.thumbnail else None,
-                        'average_rating': movie.average_rating,
-                    } for movie in trending_movies
-                ]
-            }
-            return JsonResponse(data)
-        return super().render_to_response(context, **response_kwargs)
+
+def get_trending_movies():
+    one_week_ago = timezone.now() - timedelta(days=7)
+    trending_movies = Movie.objects.filter(views__gt=1000, created_at__gte=one_week_ago).order_by('-views', '-likes')[:10]
+    return trending_movies
+
+def trending_movies_view(request):
+    trending_movies = get_trending_movies()
+    return render(request, 'trending_movies.html', {'trending_movies': trending_movies})

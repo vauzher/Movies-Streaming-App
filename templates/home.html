@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Home - Netflix Clone{% endblock %}
 {% block content %}
-<div id="featuredCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-inner">
-        {% for movie in movies|slice:":5" %}
-        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+<div id="featuredCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        {% for movie in trending_movies|slice:":5" %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" data-bs-interval="5000">
             <img src="{{ movie.thumbnail.url }}" class="d-block w-100" alt="{{ movie.title }}">
             <div class="carousel-caption d-none d-md-block">
                 <h2>{{ movie.title }}</h2>
@@ -28,15 +28,19 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">Trending Now</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mb-5">
-        {% for movie in movies|slice:":10" %}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+        {% for movie in trending_movies %}
         <div class="col">
-            <div class="card h-100">
-                <img src="{{ movie.thumbnail.url }}" class="card-img-top" alt="{{ movie.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ movie.title }}</h5>
-                    <p class="card-text">{{ movie.description|truncatewords:15 }}</p>
-                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary">
+            <div class="movie-card">
+                <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid">
+                <div class="movie-info">
+                    <h5 class="card-title mb-2">{{ movie.title }}</h5>
+                    <p class="card-text small mb-2">{{ movie.description|truncatewords:10 }}</p>
+                    <div class="d-flex justify-content-between align-items-center movie-stats mb-3">
+                        <span><i class="bi bi-eye-fill me-1"></i> {{ movie.views }}</span>
+                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.likes }}</span>
+                    </div>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary watch-btn w-100">
                         <i class="fas fa-play me-2"></i>Watch Now
                     </a>
                 </div>
@@ -46,15 +50,19 @@
     </div>
 
     <h2 class="mb-4">All Movies</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for movie in movies %}
         <div class="col">
-            <div class="card h-100">
-                <img src="{{ movie.thumbnail.url }}" class="card-img-top" alt="{{ movie.title }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ movie.title }}</h5>
-                    <p class="card-text">{{ movie.description|truncatewords:15 }}</p>
-                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary">
+            <div class="movie-card">
+                <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid">
+                <div class="movie-info">
+                    <h5 class="card-title mb-2">{{ movie.title }}</h5>
+                    <p class="card-text small mb-2">{{ movie.description|truncatewords:10 }}</p>
+                    <div class="d-flex justify-content-between align-items-center movie-stats mb-3">
+                        <span><i class="bi bi-eye-fill me-1"></i> {{ movie.views }}</span>
+                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.likes }}</span>
+                    </div>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary watch-btn w-100">
                         <i class="fas fa-play me-2"></i>Watch Now
                     </a>
                 </div>
@@ -65,6 +73,7 @@
 </div>
 
 <style>
+    /* Existing styles */
     .carousel-caption {
         bottom: 20%;
         text-align: left;
@@ -79,10 +88,6 @@
     .carousel-caption p {
         font-size: 1.2rem;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    }
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
     }
     @media (max-width: 768px) {
         .carousel-caption {
@@ -123,18 +128,60 @@
     .carousel-item img {
         animation: kenburns 10s ease-in-out infinite alternate;
     }
+
+    /* New styles for movie cards */
+    .movie-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+    .movie-card:hover {
+        transform: translateY(-5px);
+    }
+    .movie-card img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+    .movie-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+        padding: 15px;
+        color: white;
+        transition: opacity 0.3s ease;
+    }
+    .movie-card:hover .movie-info {
+        opacity: 1;
+    }
+    .movie-stats {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    .watch-btn {
+        background-color: #e50914;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+    .watch-btn:hover {
+        background-color: #f40612;
+    }
 </style>
 {% endblock %}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var carousel = document.querySelector('#featuredCarousel');
-        var carouselInstance = new bootstrap.Carousel(carousel, {
-            interval: 5000,
-            ride: 'carousel',
-            wrap: true
+        var carousel = new bootstrap.Carousel(document.querySelector('#featuredCarousel'), {
+            interval: 10,
+            ride: true
         });
-
-        carousel.addEventListener('slide.bs.carousel', function (e) {
+    
+        document.querySelector('#featuredCarousel').addEventListener('slide.bs.carousel', function (e) {
             var activeItem = this.querySelector('.active');
             var nextItem = e.relatedTarget;
             
@@ -150,4 +197,4 @@
             nextItem.style.filter = 'blur(0)';
         });
     });
-</script>
+    </script>

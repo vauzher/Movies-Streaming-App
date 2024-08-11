@@ -1,68 +1,169 @@
 {% extends 'base.html' %}
-
 {% block title %}{{ movie.title }} - Netflix Clone{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-4">
-            {% if movie.thumbnail %}
-                <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid rounded">
-            {% else %}
-                <div class="bg-secondary text-white p-5 rounded text-center">No Image Available</div>
-            {% endif %}
-        </div>
-        <div class="col-md-8">
-            <h1 class="mb-3">{{ movie.title }}</h1>
-            <p class="lead">{{ movie.description }}</p>
-            <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-            <p><strong>Genres:</strong> 
-                {% for genre in movie.genres.all %}
-                    <span class="badge bg-primary">{{ genre.name }}</span>
-                {% endfor %}
-            </p>
-            <p><strong>Average Rating:</strong> {{ movie.average_rating|floatformat:1 }} / 5.0</p>
-            
-            <div class="mt-4">
-                <h3>Rate this movie</h3>
-                <form method="post" action="{% url 'rate_movie' movie.id %}">
-                    {% csrf_token %}
-                    <select name="rating" class="form-select mb-3">
-                        <option value="1">1 Star</option>
-                        <option value="2">2 Stars</option>
-                        <option value="3">3 Stars</option>
-                        <option value="4">4 Stars</option>
-                        <option value="5">5 Stars</option>
-                    </select>
-                    <button type="submit" class="btn btn-primary">Submit Rating</button>
-                </form>
-            </div>
-            
-            <div class="mt-4">
-                <a href="{{ movie.video_link }}" class="btn btn-danger btn-lg" target="_blank">Watch Movie</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col">
-            <h3>Comments</h3>
-            <!-- Placeholder for comments system -->
-            <p>Comments system coming soon!</p>
-        </div>
-    </div>
-
-    <div class="row mt-3">
-        <div class="col">
-            <h3>Add a Comment</h3>
-            <form method="post" action="{% url 'comment_movie' movie.id %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here"></textarea>
+<div class="movie-hero" style="background-image: url('{{ movie.thumbnail.url }}');">
+    <div class="movie-hero-overlay">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    {% if movie.thumbnail %}
+                    <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid rounded shadow-lg movie-poster">
+                    {% else %}
+                    <div class="bg-secondary text-white p-5 rounded text-center">No Image Available</div>
+                    {% endif %}
                 </div>
-                <button type="submit" class="btn btn-primary">Submit Comment</button>
-            </form>
+                <div class="col-md-8">
+                    <h1 class="movie-title mb-3">{{ movie.title }}</h1>
+                    <p class="lead movie-description">{{ movie.description }}</p>
+                    <p class="movie-info"><strong>Release Date:</strong> {{ movie.release_date }}</p>
+                    <p class="movie-info"><strong>Genres:</strong>
+                        {% for genre in movie.genres.all %}
+                        <span class="badge bg-primary">{{ genre.name }}</span>
+                        {% endfor %}
+                    </p>
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="movie-rating me-3">
+                            <span class="rating-value">{{ movie.average_rating|floatformat:1 }}</span>
+                            <span class="rating-max">/5.0</span>
+                        </div>
+                        <div class="star-rating">
+                            {% for i in "12345" %}
+                            <i class="bi bi-star-fill{% if forloop.counter <= movie.average_rating %} active{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <a href="{{ movie.video_link }}" class="btn btn-danger btn-lg watch-btn" target="_blank">
+                        <i class="bi bi-play-fill me-2"></i>Watch Movie
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Rate this movie</h3>
+                    <form method="post" action="{% url 'rate_movie' movie.id %}" class="rating-form">
+                        {% csrf_token %}
+                        <div class="star-rating mb-3">
+                            {% for i in "12345" %}
+                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
+                            <label for="star{{ i }}"><i class="bi bi-star-fill"></i></label>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Rating</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="card-title">Comments</h3>
+                    <!-- Placeholder for comments system -->
+                    <p>Comments system coming soon!</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Add a Comment</h3>
+                    <form method="post" action="{% url 'comment_movie' movie.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <!-- Placeholder for related movies or additional information -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Related Movies</h3>
+                    <p>Coming soon!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .movie-hero {
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        min-height: 500px;
+        color: white;
+    }
+    .movie-hero-overlay {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 50px 0;
+    }
+    .movie-poster {
+        transform: translateY(20px);
+        transition: transform 0.3s ease-in-out;
+    }
+    .movie-poster:hover {
+        transform: translateY(10px);
+    }
+    .movie-title {
+        font-size: 3rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .movie-description {
+        font-size: 1.1rem;
+        max-width: 600px;
+    }
+    .movie-info {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    .movie-rating {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .rating-value {
+        color: #ffc107;
+    }
+    .rating-max {
+        font-size: 1rem;
+        opacity: 0.7;
+    }
+    .star-rating {
+        font-size: 1.5rem;
+        color: #ffc107;
+    }
+    .star-rating .bi-star-fill:not(.active) {
+        color: #e4e5e9;
+    }
+    .watch-btn {
+        font-size: 1.2rem;
+        padding: 10px 30px;
+    }
+    .rating-form .star-rating {
+        direction: rtl;
+        display: inline-block;
+    }
+    .rating-form .star-rating input[type="radio"] {
+        display: none;
+    }
+    .rating-form .star-rating label {
+        color: #e4e5e9;
+        font-size: 2rem;
+        padding: 0 0.1em;
+        cursor: pointer;
+    }
+    .rating-form .star-rating label:hover,
+    .rating-form .star-rating label:hover ~ label,
+    .rating-form .star-rating input[type="radio"]:checked ~ label {
+        color: #ffc107;
+    }
+</style>
 {% endblock %}
