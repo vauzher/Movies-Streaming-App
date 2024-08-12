@@ -15,9 +15,9 @@
                 <div class="col-md-8">
                     <h1 class="movie-title mb-3">{{ movie.title }} </h1>
                    
-                        {% for genre in movie.genres.all %}
-                        <span class="badge bg-primary mb-2">{{ genre.name }}</span>
-                        {% endfor %}
+                    {% for genre in movie.genres.all %}
+                    <span class="badge bg-primary mb-2">{{ genre.name }}</span>
+                    {% endfor %}
                    
                     <p class="lead movie-description">{{ movie.description }}</p>
                     <strong>Release Date:</strong> {{ movie.release_date }}
@@ -33,7 +33,6 @@
                             <div class="stat-label">
                                 <div class="star-rating">
                                     {% for i in "12345" %}
-                                    
                                     <i class="bi bi-star-fill{% if forloop.counter <= movie.average_rating %} active{% endif %}"></i>
                                     {% endfor %}
                                 </div>
@@ -41,19 +40,23 @@
                             </div>
                         </div>
                         <div class="movie-stat">
-                            <div class="stat-value">{{ movie.like_count }}</div>
+                            <div class="stat-value" id="like-count">{{ movie.like_count }}</div>
                             <div class="stat-label">
-                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                               <i class="bi bi-hand-thumbs-up-fill"></i>
                                 <span>Likes</span>
                             </div>
                         </div>
                     </div>
                     <a href="{{ movie.video_link }}" class="btn btn-danger btn-lg watch-btn" target="_blank">
-                        <i class="bi bi-play-fill me-2"></i>Watch Movie
+                        <i class="fas fa-play me-2"></i>Watch Movie
                     </a> 
                     <a href="{{ movie.trailer }}" class="btn btn-info btn-lg" target="_blank">
-                        <i class="bi bi-play-fill me-2"></i>Trailer
-                    </a> 
+                        <i class="fas fa-play me-2"></i>Trailer
+                    </a>
+                    <a href="{% url 'like_movie' movie.id %}" class="btn btn-info btn-lg like-button" data-movie-id="{{ movie.id }}">
+                        <i class="fas fa-thumbs-up me-2"></i> Like
+                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -78,26 +81,50 @@
                     </form>
                 </div>
             </div>
-
+            
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="card-title">Comments</h3>
-                    <!-- Placeholder for comments system -->
-                    {% for comment in movie.comments %}
-                    <p>{{ comment.content }}</p>
-                    {% endfor %}
+                    <h3 class="card-title mb-4">Comments</h3>
+                    {% if movie.comments.all %}
+                        {% for comment in movie.comments.all %}
+                            <div class="comment-block bg-dark p-3 rounded mb-3">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        {% if comment.user.profile.avatar %}
+                                            <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="rounded-circle user-avatar">
+                                        {% else %}
+                                            <div class="default-avatar rounded-circle bg-primary text-white">
+                                                {{ comment.user.username|make_list|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0">{{ comment.user.username }}</h6>
+                                            <small class="text-muted">{{ comment.created_at|date:"F d, Y" }}</small>
+                                        </div>
+                                        <p class="mb-0">{{ comment.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    {% endif %}
                 </div>
             </div>
-
-            <div class="card shadow-sm">
+            
+            <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="card-title">Add a Comment</h3>
+                    <h3 class="card-title mb-3">Add a Comment</h3>
                     <form method="post" action="{% url 'comment_movie' movie.id %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <textarea name="content" class="form-control" rows="3" placeholder="Write your comment here"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-chat-fill me-2"></i>Submit Comment
+                        </button>
                     </form>
                 </div>
             </div>
@@ -109,7 +136,6 @@
                     {% if related_movies %}
                         <div class="related-movies-list">
                             {% for related_movie in related_movies %}
-                            
                                 <div class="related-movie-item mb-3">
                                     <a href="{% url 'movie_detail' related_movie.id %}" class="d-flex align-items-center text-decoration-none">
                                         <img src="{{ related_movie.thumbnail.url }}" alt="{{ related_movie.title }}" class="related-movie-thumbnail me-3">
@@ -211,5 +237,68 @@
     .rating-form .star-rating input[type="radio"]:checked ~ label {
         color: #ffc107;
     }
+    .default-avatar {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    .comment-block {
+        border-left: 4px solid #007bff;
+        transition: transform 0.2s ease-in-out;
+    }
+    .comment-block:hover {
+        transform: translateX(5px);
+    }
+    .card-title {
+        color: #efefef;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .related-movie-thumbnail {
+        width: 60px;
+        height: 90px;
+        object-fit: cover;
+    }
 </style>
+
+<script>
+    $(document).ready(function(){
+        $('.like-button').click(function(event){
+            event.preventDefault();  // Prevent the default action
+    
+            var url = $(this).attr('href');  // Get the URL from the href attribute
+            
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(response){
+                    // Get the updated like count from the response
+                    var newLikeCount = response.new_like_count;
+    
+                    // Update the like count displayed on the page
+                    $('#like-count').text(newLikeCount);
+    
+                    // Toggle the button appearance based on whether the movie is liked
+                    if (response.liked) {
+                        $('.like-button').addClass('liked');  // Add a class to indicate the movie is liked
+                        $('.like-button i').removeClass('fa-thumbs-up').addClass('fa-thumbs-down');  // Optionally change the icon
+                    } else {
+                        $('.like-button').removeClass('liked');  // Remove the class if the movie is unliked
+                        $('.like-button i').removeClass('fa-thumbs-down').addClass('fa-thumbs-up');  // Revert the icon
+                    }
+                },
+                error: function(error){
+                    console.log(error);
+                }
+            });
+        });
+    });
+    </script>
+    
+    
 {% endblock %}
