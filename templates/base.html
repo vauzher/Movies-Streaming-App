@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+
         :root {
             --netflix-red: #e50914;
             --netflix-black: #141414;
@@ -28,6 +29,9 @@
     background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
     pointer-events: none;
     }
+    .bi-hand-thumbs-up-fill {
+    color: #007bff;  /* You can change this to match your color scheme */
+}
 
         .navbar {
             background-color: transparent !important;
@@ -88,6 +92,162 @@
             background-color: #f40612;
             border-color: #f40612;
         }
+        .related-movies-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.related-movie-item {
+    transition: background-color 0.3s ease;
+}
+
+.related-movie-item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.related-movie-thumbnail {
+    width: 60px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.related-movie-info h5 {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.related-movie-info .text-muted {
+    font-size: 0.8rem;
+}
+
+
+          /* Existing styles */
+    .carousel-caption {
+        bottom: 20%;
+        text-align: left;
+        max-width: 550px;
+        left: 15%;
+    }
+    .carousel-caption h2 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
+    }
+    .carousel-caption p {
+        font-size: 1.2rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    @media (max-width: 768px) {
+        .carousel-caption {
+            bottom: 10%;
+        }
+        .carousel-caption h2 {
+            font-size: 1.8rem;
+        }
+        .carousel-caption p {
+            font-size: 1rem;
+        }
+    }
+    .carousel-item {
+        transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+    }
+    .carousel-item:not(.active) {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: blur(5px);
+    }
+    .carousel-item.active {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+    .carousel-fade .active.carousel-item-start,
+    .carousel-fade .active.carousel-item-end {
+        transition: opacity 0s 0.6s;
+    }
+    @keyframes kenburns {
+        0% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(1.1);
+        }
+    }
+    .carousel-item img {
+        animation: kenburns 10s ease-in-out infinite alternate;
+    }
+
+    /* New styles for movie cards */
+    .movie-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease-in-out;
+    }
+    .movie-card:hover {
+        transform: translateY(-5px);
+    }
+    .movie-card img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+    .movie-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+        padding: 15px;
+        color: white;
+        transition: opacity 0.3s ease;
+    }
+    .movie-card:hover .movie-info {
+        opacity: 1;
+    }
+    .movie-stat {
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 10px 20px;
+    min-width: 120px;
+}
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+.stat-label {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+.star-rating {
+    font-size: 1.2rem;
+    color: #ffc107;
+    margin-bottom: 5px;
+}
+.star-rating .bi-star-fill:not(.active) {
+    color: #e4e5e9;
+}
+.bi-hand-thumbs-up-fill {
+    color: #007bff;
+    font-size: 1.2rem;
+}
+    .movie-stats {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    .watch-btn {
+        background-color: #e50914;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+    .watch-btn:hover {
+        background-color: #f40612;
+    }
     </style>
 </head>
 <body>
@@ -103,7 +263,7 @@
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'trending' %}">Trending</a>
+                        <a class="nav-link" href="#">Trending</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'user_recommendations' %}">Recommendations</a>
@@ -127,6 +287,7 @@
             }
         });
 
+            
         
     </script>
 </body>

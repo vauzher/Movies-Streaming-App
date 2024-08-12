@@ -13,28 +13,47 @@
                     {% endif %}
                 </div>
                 <div class="col-md-8">
-                    <h1 class="movie-title mb-3">{{ movie.title }}</h1>
-                    <p class="lead movie-description">{{ movie.description }}</p>
-                    <p class="movie-info"><strong>Release Date:</strong> {{ movie.release_date }}</p>
-                    <p class="movie-info"><strong>Genres:</strong>
+                    <h1 class="movie-title mb-3">{{ movie.title }} </h1>
+                   
                         {% for genre in movie.genres.all %}
-                        <span class="badge bg-primary">{{ genre.name }}</span>
+                        <span class="badge bg-primary mb-2">{{ genre.name }}</span>
                         {% endfor %}
-                    </p>
+                   
+                    <p class="lead movie-description">{{ movie.description }}</p>
+                    <strong>Release Date:</strong> {{ movie.release_date }}
+                   
                     <div class="d-flex align-items-center mb-4">
-                        <div class="movie-rating me-3">
-                            <span class="rating-value">{{ movie.average_rating|floatformat:1 }}</span>
-                            <span class="rating-max">/5.0</span>
+                        <div class="movie-stat me-4">
+                            {% if movie.average_rating %}
+                            <div class="stat-value">{{ movie.average_rating }}</div>
+                            {% else %}
+                            <p>Not enough ratings</p>
+                            {% endif %}
+                            
+                            <div class="stat-label">
+                                <div class="star-rating">
+                                    {% for i in "12345" %}
+                                    
+                                    <i class="bi bi-star-fill{% if forloop.counter <= movie.average_rating %} active{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                                <span>Average Rating</span>
+                            </div>
                         </div>
-                        <div class="star-rating">
-                            {% for i in "12345" %}
-                            <i class="bi bi-star-fill{% if forloop.counter <= movie.average_rating %} active{% endif %}"></i>
-                            {% endfor %}
+                        <div class="movie-stat">
+                            <div class="stat-value">{{ movie.like_count }}</div>
+                            <div class="stat-label">
+                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                                <span>Likes</span>
+                            </div>
                         </div>
                     </div>
                     <a href="{{ movie.video_link }}" class="btn btn-danger btn-lg watch-btn" target="_blank">
                         <i class="bi bi-play-fill me-2"></i>Watch Movie
-                    </a>
+                    </a> 
+                    <a href="{{ movie.trailer }}" class="btn btn-info btn-lg" target="_blank">
+                        <i class="bi bi-play-fill me-2"></i>Trailer
+                    </a> 
                 </div>
             </div>
         </div>
@@ -64,7 +83,9 @@
                 <div class="card-body">
                     <h3 class="card-title">Comments</h3>
                     <!-- Placeholder for comments system -->
-                    <p>Comments system coming soon!</p>
+                    {% for comment in movie.comments %}
+                    <p>{{ comment.content }}</p>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -82,11 +103,36 @@
             </div>
         </div>
         <div class="col-md-4">
-            <!-- Placeholder for related movies or additional information -->
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title">Related Movies</h3>
-                    <p>Coming soon!</p>
+                    <h3 class="card-title mb-4">Related Movies</h3>
+                    {% if related_movies %}
+                        <div class="related-movies-list">
+                            {% for related_movie in related_movies %}
+                            
+                                <div class="related-movie-item mb-3">
+                                    <a href="{% url 'movie_detail' related_movie.id %}" class="d-flex align-items-center text-decoration-none">
+                                        <img src="{{ related_movie.thumbnail.url }}" alt="{{ related_movie.title }}" class="related-movie-thumbnail me-3">
+                                        <div class="related-movie-info">
+                                            <h5 class="mb-1">{{ related_movie.title }}</h5>
+                                            <div class="text-muted small">
+                                                <span class="me-2">
+                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                    {{ related_movie.average_rating|floatformat:1 }}
+                                                </span>
+                                                <span>
+                                                    <i class="bi bi-hand-thumbs-up-fill text-primary"></i>
+                                                    {{ related_movie.like_count }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No related movies found.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

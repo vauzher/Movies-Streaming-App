@@ -37,8 +37,8 @@
                     <h5 class="card-title mb-2">{{ movie.title }}</h5>
                     <p class="card-text small mb-2">{{ movie.description|truncatewords:10 }}</p>
                     <div class="d-flex justify-content-between align-items-center movie-stats mb-3">
-                        <span><i class="bi bi-eye-fill me-1"></i> {{ movie.views }}</span>
-                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.likes }}</span>
+                        <span><i class="bi bi-star-fill me-1"></i> {{ movie.average_rating }}</span>
+                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.like_count }}</span>
                     </div>
                     <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary watch-btn w-100">
                         <i class="fas fa-play me-2"></i>Watch Now
@@ -59,8 +59,8 @@
                     <h5 class="card-title mb-2">{{ movie.title }}</h5>
                     <p class="card-text small mb-2">{{ movie.description|truncatewords:10 }}</p>
                     <div class="d-flex justify-content-between align-items-center movie-stats mb-3">
-                        <span><i class="bi bi-eye-fill me-1"></i> {{ movie.views }}</span>
-                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.likes }}</span>
+                        <span><i class="bi bi-star-fill me-1"></i> {{ movie.average_rating }}</span>
+                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.like_count }}</span>
                     </div>
                     <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary watch-btn w-100">
                         <i class="fas fa-play me-2"></i>Watch Now
@@ -71,107 +71,7 @@
         {% endfor %}
     </div>
 </div>
-
-<style>
-    /* Existing styles */
-    .carousel-caption {
-        bottom: 20%;
-        text-align: left;
-        max-width: 550px;
-        left: 15%;
-    }
-    .carousel-caption h2 {
-        font-size: 2.5rem;
-        font-weight: bold;
-        text-shadow: 1px 1px 1px rgba(0,0,0,0.8);
-    }
-    .carousel-caption p {
-        font-size: 1.2rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    }
-    @media (max-width: 768px) {
-        .carousel-caption {
-            bottom: 10%;
-        }
-        .carousel-caption h2 {
-            font-size: 1.8rem;
-        }
-        .carousel-caption p {
-            font-size: 1rem;
-        }
-    }
-    .carousel-item {
-        transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
-    }
-    .carousel-item:not(.active) {
-        opacity: 0;
-        transform: scale(0.95);
-        filter: blur(5px);
-    }
-    .carousel-item.active {
-        opacity: 1;
-        transform: scale(1);
-        filter: blur(0);
-    }
-    .carousel-fade .active.carousel-item-start,
-    .carousel-fade .active.carousel-item-end {
-        transition: opacity 0s 0.6s;
-    }
-    @keyframes kenburns {
-        0% {
-            transform: scale(1);
-        }
-        100% {
-            transform: scale(1.1);
-        }
-    }
-    .carousel-item img {
-        animation: kenburns 10s ease-in-out infinite alternate;
-    }
-
-    /* New styles for movie cards */
-    .movie-card {
-        position: relative;
-        overflow: hidden;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease-in-out;
-    }
-    .movie-card:hover {
-        transform: translateY(-5px);
-    }
-    .movie-card img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-    }
-    .movie-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(5px);
-        padding: 15px;
-        color: white;
-        transition: opacity 0.3s ease;
-    }
-    .movie-card:hover .movie-info {
-        opacity: 1;
-    }
-    .movie-stats {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-    .watch-btn {
-        background-color: #e50914;
-        border: none;
-        transition: background-color 0.3s ease;
-    }
-    .watch-btn:hover {
-        background-color: #f40612;
-    }
-</style>
+   
 {% endblock %}
 
 <script>
