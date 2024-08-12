@@ -15,10 +15,25 @@ class Movie(models.Model):
     genres = models.ManyToManyField(Genre)
     video_link = models.URLField()
     thumbnail = models.ImageField(upload_to='movie_thumbnails/')
-    average_rating = models.FloatField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     views = models.IntegerField(default=0)  # Track the number of views
-    likes = models.IntegerField(default=0)  # Track the number of likes
     created_at = models.DateTimeField(auto_now_add=True)  # Track when the movie was added
+    trailer = models.URLField()
+
+    def get_like_count(self):
+        return self.like_set.count()
+    
+    def get_average_rating(self):
+        ratings = self.rating_set.all()
+        if ratings.exists():
+            return sum(rating.value for rating in ratings) / ratings.count()
+        return 0
+    
+    def get_comments(self):
+        return self.comment_set.all()
+
+    def update_average_rating(self):
+        self.average_rating = self.get_average_rating()
+        self.save()
 
     def __str__(self):
         return self.title
