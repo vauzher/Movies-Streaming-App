@@ -6,6 +6,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-4">
+              
                     {% if movie.thumbnail %}
                     <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid rounded shadow-lg movie-poster">
                     {% else %}
@@ -53,7 +54,33 @@
                     </a> 
                     <a href="{{ movie.trailer }}" class="btn btn-info btn-lg" target="_blank">
                         <i class="bi bi-play-fill me-2"></i>Trailer
-                    </a> 
+                        </a>
+                  
+                        {% if user.is_authenticated %}
+                        {% if in_user_list %}
+                            <a href="{% url 'remove_from_list' movie.id %}" class="btn btn-warning btn-lg"><i class="bi bi-x-lg"></i></a>
+                        {% else %}
+                            <a href="{% url 'add_to_list' movie.id %}" class="btn btn-success btn-lg"><i class="bi bi-plus-lg"></i></a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if messages %}
+    <div class="alerts mt-3">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show">
+                {{ message }}<button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+            ></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+
                 </div>
             </div>
         </div>
@@ -69,7 +96,7 @@
                     <form method="post" action="{% url 'rate_movie' movie.id %}" class="rating-form">
                         {% csrf_token %}
                         <div class="star-rating mb-3">
-                            {% for i in "12345" %}
+                            {% for i in "54321" %}
                             <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}">
                             <label for="star{{ i }}"><i class="bi bi-star-fill"></i></label>
                             {% endfor %}
@@ -234,6 +261,33 @@
     .rating-form .star-rating label:hover ~ label,
     .rating-form .star-rating input[type="radio"]:checked ~ label {
         color: #ffc107;
+    }
+    .default-avatar {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    .comment-block {
+        border-left: 4px solid #007bff;
+        transition: transform 0.2s ease-in-out;
+    }
+    .comment-block:hover {
+        transform: translateX(5px);
+    }
+    .card-title {
+        color: #efefef;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    .related-movie-thumbnail {
+        width: 60px;
+        height: 90px;
+        object-fit: cover;
     }
 </style>
 {% endblock %}

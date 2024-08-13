@@ -25,3 +25,11 @@ class Comment(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+class UserList(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    movies = models.ManyToManyField(Movie, related_name="user_lists")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s list: {self.name}"

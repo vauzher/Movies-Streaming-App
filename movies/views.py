@@ -5,10 +5,12 @@
 from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from .models import Movie
+from user_interactions.models import UserList
 from django.db.models import F
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 
 class HomeView(ListView):
@@ -57,13 +59,17 @@ class MovieDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         movie = self.object
         # Add like count and average rating to the movie
+
         movie.like_count = movie.get_like_count()
         movie.average_rating = movie.get_average_rating()
         movie.comments = movie.get_comments()
         # Get related movies
         related_movies = self.get_related_movies(movie)
         context['related_movies'] = related_movies
-
+        user = self.request.user
+        if user.is_authenticated:
+            user_list = UserList.objects.get(user=user)
+            context['in_user_list'] = self.get_object() in user_list.movies.all()
         return context
 
     def get_related_movies(self, movie):

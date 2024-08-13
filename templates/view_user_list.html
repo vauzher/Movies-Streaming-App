@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}{{ user.username }}'s Movie List - Netflix Clone{% endblock %}
+{% block content %}
+<div class="user-list-hero mt-5">
+    <div class="user-list-hero-overlay">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle shadow-lg user-avatar">
+                    {% else %}
+                    <div class="default-avatar rounded-circle bg-primary text-white">
+                        {{ user.username|make_list|first|upper }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <h1 class="user-list-title mb-3">{{ user.username }}'s Movie List</h1>
+                    <p class="lead">Explore {{ user.username }}'s curated collection of favorite movies.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Movie Collection</h2>
+                    {% if user_list.movies.all %}
+                        <div class="row">
+                            {% for movie in user_list.movies.all %}
+                            <div class="col-md-3 mb-4">
+                                <div class="movie-item">
+                                    <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none">
+                                        <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}" class="img-fluid rounded mb-2 movie-thumbnail">
+                                        <h5 class="movie-title">{{ movie.title }}</h5>
+                                    </a>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <div class="movie-rating">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                            {{ movie.average_rating|floatformat:1 }}
+                                        </div>
+                                        <a href="{% url 'remove_from_list' movie.id %}" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No movies in the list yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .user-list-hero {
+        background-image: url('path/to/default-hero-image.jpg');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        min-height: 300px;
+        color: white;
+    }
+    .user-list-hero-overlay {
+        background: rgba(0, 0, 0, 0.7);
+        padding: 50px 0;
+    }
+    .user-avatar {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+    }
+    .default-avatar {
+        width: 200px;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 5rem;
+    }
+    .user-list-title {
+        font-size: 3rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .movie-item {
+        transition: transform 0.3s ease-in-out;
+    }
+    .movie-item:hover {
+        transform: translateY(-5px);
+    }
+    .movie-thumbnail {
+        height: 300px;
+        object-fit: cover;
+    }
+    .movie-title {
+        color: #efefef;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .movie-rating {
+        font-size: 0.9rem;
+    }
+    .card-title {
+        color: #efefef;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

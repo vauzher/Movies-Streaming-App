@@ -1,3 +1,4 @@
+# main urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -8,6 +9,7 @@ urlpatterns = [
     path('', include('movies.urls')),
     path('recommendations/', include('recommendations.urls')),
     path('user/', include('user_interactions.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:
