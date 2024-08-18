@@ -6,8 +6,8 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-4">
-                    {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle shadow-lg user-avatar">
+                    {% if user.profile.profile_photo %}
+                    <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle shadow-lg user-avatar">
                     {% else %}
                     <div class="default-avatar rounded-circle bg-primary text-white">
                         {{ user.username|make_list|first|upper }}
@@ -62,7 +62,7 @@
 
 <style>
     .user-list-hero {
-        background-image: url('path/to/default-hero-image.jpg');
+        background-image: url('/media/movie_thumbnails/list-wallpaper.jpg');
         background-size: cover;
         background-position: center;
         position: relative;

@@ -15,8 +15,11 @@ def rate_movie(request, movie_id):
 @login_required
 def like_movie(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
-    Like.objects.get_or_create(user=request.user, movie=movie)
+    like, created = Like.objects.get_or_create(user=request.user, movie = movie)
+    if not created:
+        like.delete()
     return redirect('movie_detail', pk=movie_id)
+
 
 @login_required
 def comment_movie(request, movie_id):
@@ -47,8 +50,7 @@ def remove_from_list(request, movie_id):
     else:
         messages.error(request, f'{movie.title} is not in your list.')
     return redirect('movie_detail', pk = movie_id)
-
 @login_required
 def view_user_list(request):
-    user_list = get_object_or_404(UserList, user = request.user)
+    user_list, created = UserList.objects.get_or_create(user=request.user)
     return render(request, 'view_user_list.html', {'user_list': user_list})

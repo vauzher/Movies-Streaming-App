@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
-
 {% block title %}My Account - Netflix Clone{% endblock %}
-
 {% block content %}
 <div class="container mt-5">
     <div class="row">
@@ -12,7 +10,18 @@
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         <div class="row mb-4">
-                            
+                            <div class="col-md-4 text-center">
+                                <div class="mb-3">
+                                    <img src="{{ user.profile.profile_photo.url|default:'/media/profile_photos/user-default.png' }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="id_profile_picture" class="btn btn-outline-primary">
+                                        <i class="fas fa-camera me-2"></i>Change Picture
+                                        <input type="file" id="id_profile_picture" name="profile_picture" style="display: none;" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
                                 <div class="mb-3">
                                     <label for="id_username" class="form-label">Username</label>
                                     <input type="text" class="form-control" id="id_username" name="username" value="{{ user.username }}" required>
@@ -29,8 +38,8 @@
                                     <label for="id_last_name" class="form-label">Last Name</label>
                                     <input type="text" class="form-control" id="id_last_name" name="last_name" value="{{ user.last_name }}">
                                 </div>
+                            </div>
                         </div>
-                        
                         <div class="mb-4">
                             <h4>Change Password</h4>
                             <div class="mb-3">
@@ -53,17 +62,17 @@
                         </div>
                     </form>
                     {% if form.errors %}
-                        <div class="alert alert-danger mt-3">
-                            <strong>Error:</strong> Please correct the errors below.
-                            {{ form.errors }}
-                        </div>
+                    <div class="alert alert-danger mt-3">
+                        <strong>Error:</strong> Please correct the errors below.
+                        {{ form.errors }}
+                    </div>
                     {% endif %}
                     {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} mt-3">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} mt-3">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
                     {% endif %}
                 </div>
             </div>

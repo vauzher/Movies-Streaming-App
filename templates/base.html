@@ -56,6 +56,8 @@
             z-index: 1;
             pointer-events: none;
         }
+      
+
         .navbar-brand {
             color: var(--netflix-red) !important;
             font-size: 1.8rem;
@@ -151,6 +153,7 @@
     }
     .carousel-item {
         transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+        height: 100%;
     }
     .carousel-item:not(.active) {
         opacity: 0;
@@ -162,6 +165,7 @@
         transform: scale(1);
         filter: blur(0);
     }
+   
     .carousel-fade .active.carousel-item-start,
     .carousel-fade .active.carousel-item-end {
         transition: opacity 0s 0.6s;
@@ -179,75 +183,204 @@
     }
 
     /* New styles for movie cards */
-    .movie-card {
-        position: relative;
-        overflow: hidden;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease-in-out;
-    }
-    .movie-card:hover {
-        transform: translateY(-5px);
-    }
-    .movie-card img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-    }
-    .movie-info {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.7);
-        backdrop-filter: blur(5px);
-        padding: 15px;
-        color: white;
-        transition: opacity 0.3s ease;
-    }
-    .movie-card:hover .movie-info {
-        opacity: 1;
-    }
-    .movie-stat {
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 10px 20px;
-    min-width: 120px;
+   /* Common styles for all movie cards */
+.movie-card, .featured-movie-card {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 150%; 
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
 }
-.stat-value {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #fff;
+
+.movie-card:hover, .featured-movie-card:hover {
+    transform: scale(1.05);
 }
-.stat-label {
-    font-size: 0.9rem;
-    color: #ccc;
+
+.movie-card img, .featured-movie-card img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.star-rating {
-    font-size: 1.2rem;
-    color: #ffc107;
+
+.movie-info, .featured-movie-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    color: white;
+}
+
+/* Styles specific to featured movie cards */
+.featured-movies-slider {
+    margin-bottom: 2rem;
+}
+
+.featured-movies-slider .row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    height: 500px;
+}
+
+.featured-movie-card {
+    margin-right: 15px;
+    flex: 0 0 auto;
+    width: 500px;
+ /* Adjust this value as needed */
+}
+
+.featured-movie-thumbnail {
+ height: 100px;
+}
+.featured-movie-info h5 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.featured-movie-info p {
+    font-size: 0.8rem;
     margin-bottom: 5px;
 }
-.star-rating .bi-star-fill:not(.active) {
-    color: #e4e5e9;
+
+.featured-movie-info .btn {
+    font-size: 0.8rem;
+    padding: 2px 5px;
 }
-.bi-hand-thumbs-up-fill {
-    color: #007bff;
-    font-size: 1.2rem;
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.featured-movies-slider .row::-webkit-scrollbar {
+    display: none;
 }
-    .movie-stats {
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
-    .watch-btn {
-        background-color: #e50914;
-        border: none;
-        transition: background-color 0.3s ease;
-    }
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.featured-movies-slider .row {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Styles for the main movie grid */
+#movieGrid .movie-card {
+    height: 0;
+    padding-top: 150%; /* 2:3 aspect ratio */
+}
+
+.movie-info h5 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.movie-info p {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+}
+
+.movie-stats {
+    font-size: 0.8rem;
+}
+
+.watch-btn {
+    font-size: 0.9rem;
+}
     .watch-btn:hover {
         background-color: #f40612;
     }
+    #featuredCarousel {
+    width: 100%;
+    height: 900px; /* Adjust this value to your desired height */
+  }
+
+  .carousel-inner, .carousel-item {
+    height: 100%;
+  }
+
+  .carousel-image-wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background for better text visibility */
+    padding: 20px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .movie-card {
+    transition: transform 0.3s;
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+.genre-btn.active {
+    background-color: #007bff;
+    color: white;
+}
+.featured-movies-carousel {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+        .featured-movies-container {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .featured-movie-card-movie-movie {
+            flex: 0 0 100%;
+            position: relative;
+            height: 400px;
+        }
+        .featured-movie-card-movie-movie img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .featured-movie-info-movie {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+        }
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .carousel-control.prev { left: 10px; }
+        .carousel-control.next { right: 10px; }
+        .movie-card-movie {
+            transition: transform 0.3s ease;
+        }
+        .movie-card-movie:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -264,7 +397,7 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_recommendations' %}">Recommendations</a>
+                        <a class="nav-link" href="{% url 'movies_page' %}">Movies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view_user_list' %}">My List</a>
@@ -302,7 +435,29 @@
             }
         });
 
-            
+        document.addEventListener('DOMContentLoaded', function() {
+        // Genre filtering
+        const genreButtons = document.querySelectorAll('.genre-btn');
+        const movieItems = document.querySelectorAll('.movie-item');
+
+        genreButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const genre = this.getAttribute('data-genre');
+                
+                genreButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                movieItems.forEach(item => {
+                    const itemGenres = item.getAttribute('data-genres').split(' ');
+                    if (genre === 'all' || itemGenres.includes(genre)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
         
     </script>
 </body>

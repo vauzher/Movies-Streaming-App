@@ -10,6 +10,7 @@ urlpatterns = [
     path('recommendations/', include('recommendations.urls')),
     path('user/', include('user_interactions.urls')),
     path('accounts/', include('accounts.urls')),
+    
 ]
 
 if settings.DEBUG:

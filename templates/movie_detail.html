@@ -26,7 +26,7 @@
                     <div class="d-flex align-items-center mb-4">
                         <div class="movie-stat me-4">
                             {% if movie.average_rating %}
-                            <div class="stat-value">{{ movie.average_rating }}</div>
+                            <div class="stat-value">{{ movie.average_rating|floatformat:1 }}</div>
                             {% else %}
                             <p>Not enough ratings</p>
                             {% endif %}
@@ -45,13 +45,13 @@
                             <div class="stat-value">{{ movie.like_count }}</div>
                             <div class="stat-label">
                                 <i class="bi bi-hand-thumbs-up-fill"></i>
-                                <span>Likes</span>
                             </div>
                         </div>
                     </div>
                     <a href="{{ movie.video_link }}" class="btn btn-danger btn-lg watch-btn" target="_blank">
                         <i class="bi bi-play-fill me-2"></i>Watch Movie
                     </a> 
+                    
                     <a href="{{ movie.trailer }}" class="btn btn-info btn-lg" target="_blank">
                         <i class="bi bi-play-fill me-2"></i>Trailer
                         </a>
@@ -63,7 +63,18 @@
                             <a href="{% url 'add_to_list' movie.id %}" class="btn btn-success btn-lg"><i class="bi bi-plus-lg"></i></a>
                         {% endif %}
                     {% endif %}
+                    {% if user_liked %}
+                    <a href="{% url 'like_movie' movie.id %}" class="btn btn-danger btn-lg watch-btn">
+                        <i class="bi bi-hand-thumbs-down"></i> 
+                    </a> 
 
+                    {% else %}
+                    <a href="{% url 'like_movie' movie.id %}" class="btn btn-danger btn-lg watch-btn">
+                        <i class="bi bi-hand-thumbs-up"></i> 
+                    </a> 
+                    {% endif %}
+
+                    
                     {% if messages %}
     <div class="alerts mt-3">
         {% for message in messages %}
@@ -114,8 +125,8 @@
                             <div class="comment-block bg-dark p-3 rounded mb-3">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
-                                        {% if comment.user.profile.avatar %}
-                                            <img src="{{ comment.user.profile.avatar.url }}" alt="{{ comment.user.username }}" class="rounded-circle user-avatar">
+                                        {% if comment.user.profile.profile_photo %}
+                                            <img width="60px" height="60px" src="{{ comment.user.profile.profile_photo.url }}" alt="{{ comment.user.username }}" class="rounded-circle user-avatar">
                                         {% else %}
                                             <div class="default-avatar rounded-circle bg-primary text-white">
                                                 {{ comment.user.username|make_list|first|upper }}

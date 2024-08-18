@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'recommendations',
     'user_interactions',
     'accounts',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

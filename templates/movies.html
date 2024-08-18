@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Movies - Netflix Clone{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    
+
+    <!-- Genre Selection -->
+    <h2 class="mb-4 mt-5">All Movies</h2>
+    <div class="genre-buttons mb-4">
+        <button class="btn btn-outline-primary me-2 mb-2 genre-btn active" data-genre="all">All</button>
+        {% for genre in genres %}
+        <button class="btn btn-outline-primary me-2 mb-2 genre-btn" data-genre="{{ genre.id }}">{{ genre.name }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- Movie Grid -->
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4" id="movieGrid">
+        {% for movie in movies %}
+        <div class="col movie-item" data-genres="{% for genre in movie.genres.all %}{{ genre.id }} {% endfor %}">
+            <div class="movie-card">
+                <img src="{{ movie.thumbnail.url }}" alt="{{ movie.title }}">
+                <div class="movie-info">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text small">{{ movie.description|truncatewords:10 }}</p>
+                    <div class="d-flex justify-content-between align-items-center movie-stats mb-2">
+                        <span><i class="bi bi-star-fill me-1"></i> {{ movie.get_average_rating|floatformat:1 }}</span>
+                        <span><i class="bi bi-hand-thumbs-up-fill me-1"></i> {{ movie.get_like_count }}</span>
+                    </div>
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-primary watch-btn w-100">
+                        <i class="fas fa-play me-2"></i>Watch
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+<script>
+    
+</script>
