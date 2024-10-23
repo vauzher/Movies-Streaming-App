@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.apps import AppConfig
 
 class HomeView(ListView):
     model = Movie
@@ -40,7 +41,6 @@ class MovieDetailView(DetailView):
         movie.comments = movie.get_comments()
         related_movies = self.get_related_movies(movie)
         context['related_movies'] = related_movies
-
         user = self.request.user
         if user.is_authenticated:
             # Check if the movie is in any of the user's lists
@@ -74,7 +74,7 @@ class MovieDetailView(DetailView):
         return related_movies
 
 def get_trending_movies():
-    one_week_ago = timezone.now() - timedelta(days=14)
+    one_week_ago = timezone.now() - timedelta(days=100)
     trending_movies = Movie.objects.filter(views__gt=1000, created_at__gte=one_week_ago).order_by('-views')[:10]
     return trending_movies
 
@@ -113,3 +113,5 @@ class MoviesView(ListView):
         one_week_ago = timezone.now() - timedelta(days=14)
         trending_movies = Movie.objects.filter(views__gt=1000, created_at__gte=one_week_ago).order_by('-views')[:10]
         return trending_movies  
+    
+

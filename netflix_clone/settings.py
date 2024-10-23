@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'movies',
     'core',
-    'recommendations',
     'user_interactions',
     'accounts',
     'widget_tweaks',

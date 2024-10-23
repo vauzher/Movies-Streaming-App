@@ -1,4 +1,3 @@
-# forms.py
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserChangeForm, AuthenticationForm, UserCreationForm
@@ -14,7 +13,6 @@ class UserProfileForm(forms.ModelForm):
     current_password = forms.CharField(widget=forms.PasswordInput(), required=False)
     new_password = forms.CharField(widget=forms.PasswordInput(), required=False)
     confirm_password = forms.CharField(widget=forms.PasswordInput(), required=False)
-    bio = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
     profile_picture = forms.ImageField(required=False)
 
     class Meta:
@@ -45,10 +43,7 @@ class UserProfileForm(forms.ModelForm):
         if commit:
             user.save()
             profile, created = Profile.objects.get_or_create(user=user)
-            profile.bio = self.cleaned_data.get('bio', '')
             if self.cleaned_data.get('profile_picture'):
                 profile.profile_photo = self.cleaned_data['profile_picture']
             profile.save()
         return user
-
-# ... rest of the file remains the same ...

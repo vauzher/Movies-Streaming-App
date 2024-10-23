@@ -12,8 +12,10 @@
                         <div class="row mb-4">
                             <div class="col-md-4 text-center">
                                 <div class="mb-3">
-                                    <img src="{{ user.profile.profile_photo.url|default:'/media/profile_photos/user-default.png' }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
-                                </div>
+                                    <img src="{% if user.profile.profile_photo %}{{ user.profile.profile_photo.url }}{% else %}/media/profile_photos/user-default.png{% endif %}"
+                                    alt="Profile Picture"
+                                    class="img-fluid rounded-circle"
+                                    style="width: 150px; height: 150px; object-fit: cover;">                                </div>
                                 <div class="mb-3">
                                     <label for="id_profile_picture" class="btn btn-outline-primary">
                                         <i class="fas fa-camera me-2"></i>Change Picture

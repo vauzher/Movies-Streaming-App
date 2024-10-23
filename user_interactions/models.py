@@ -32,4 +32,4 @@ class UserList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username}'s list: {self.name}"
+           return f"{self.user.username}'s list (ID: {self.id})"

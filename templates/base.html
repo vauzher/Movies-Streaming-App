@@ -381,6 +381,35 @@
         .movie-card-movie:hover {
             transform: scale(1.05);
         }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        .navbar-nav .nav-link {
+            color: #e5e5e5;
+            transition: color 0.3s ease;
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffffff;
+        }
+        .dropdown-menu {
+            background-color: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dropdown-item {
+            color: #e5e5e5;
+        }
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        .dropdown-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .profile-photo {
+        width: 30px;
+        height: 30px;
+        object-fit: cover;
+    }
     </style>
 </head>
 <body>
@@ -391,39 +420,48 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
-                    
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'movies_page' %}">Movies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'view_user_list' %}">My List</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'my_account' %}">My Account</a>
-                    </li>
                     {% if user.is_authenticated %}
-                    <form action="/accounts/logout/" method="post">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-warning" type="submit">Logout</button>
-                    </form>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{{ user.profile.profile_photo.url }}" alt="{{ user.username }}" class="rounded-circle me-2 profile-photo">
+                                <span>{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'my_account' %}">My Account</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="/accounts/logout/" method="post" class="px-2">
+                                        {% csrf_token %}
+                                        <button class="btn btn-outline-danger w-100" type="submit">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
                     {% else %}
-                    <form action="/accounts/login/" method="post">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-success">Login</button>
-                    </form>
+                        <li class="nav-item">
+                            <form action="/accounts/login/" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-success">Login</button>
+                            </form>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-
     {% block content %}
     {% endblock %}
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         window.addEventListener('scroll', function() {

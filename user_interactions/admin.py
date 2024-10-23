@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Comment, Like, Rating
+from .models import Comment, Like, Rating, UserList
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -15,3 +15,8 @@ class LikeAdmin(admin.ModelAdmin):
 class RatingAdmin(admin.ModelAdmin):
     list_display = ('user', 'movie', 'value', 'created_at')
     search_fields = ('user__username', 'movie__title')
+
+
+@admin.register(UserList)
+class List(admin.ModelAdmin):
+    list_display = ('user',)
