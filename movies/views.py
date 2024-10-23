@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView
 from django.http import JsonResponse
 from .models import Movie, Genre
 from user_interactions.models import UserList, Rating, Like, Comment
-from django.db.models import F
+from django.db.models import F, Count
 from django.utils import timezone
 from datetime import timedelta
 from django.shortcuts import render
@@ -13,6 +13,24 @@ class HomeView(ListView):
     model = Movie
     template_name = 'home.html'
     context_object_name = 'movies'
+
+    @staticmethod
+    def get_recommended_movies(user):
+        if not user.is_authenticated:
+            return Movie.objects.none()
+        
+        liked_movies = Movie.objects.filter(like__user=user)
+        listed_movies = Movie.objects.filter(user_lists__user=user)
+        
+        user_genres = set()
+        for movie in (liked_movies | listed_movies).distinct():
+            user_genres.update(movie.genres.all())
+        
+        recommended_movies = Movie.objects.filter(genres__in=user_genres).exclude(
+            id__in=(liked_movies | listed_movies)
+        ).distinct().order_by('-views')[:10]
+        
+        return recommended_movies
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -26,6 +44,14 @@ class HomeView(ListView):
             movie.like_count = movie.get_like_count()
             movie.average_rating = movie.get_average_rating()
         context['trending_movies'] = trending_movies
+        
+        # Add recommended movies to the context
+        recommended_movies = self.get_recommended_movies(self.request.user)
+        for movie in recommended_movies:
+            movie.like_count = movie.get_like_count()
+            movie.average_rating = movie.get_average_rating()
+        context['recommended_movies'] = recommended_movies
+        
         return context
 
 class MovieDetailView(DetailView):
