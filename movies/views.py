@@ -82,12 +82,9 @@ class MovieDetailView(DetailView):
             # Check if user has liked this movie
             context['user_liked'] = Like.objects.filter(user=user, movie=movie).exists()
 
-            # Get user's comment for this movie, if any
-            try:
-                user_comment = Comment.objects.get(user=user, movie=movie)
-                context['user_comment'] = user_comment.content
-            except Comment.DoesNotExist:
-                context['user_comment'] = None
+            # Get user's comment for this movie, if any (changed from get to filter().first())
+            user_comment = Comment.objects.filter(user=user, movie=movie).first()
+            context['user_comment'] = user_comment.content if user_comment else None
 
         return context
 
