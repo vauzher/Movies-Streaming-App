@@ -55,25 +55,31 @@ A Django-based movie streaming platform that replicates core Netflix functionali
 ## 🔧 Installation
 
 1. Clone the repository
-bash
+```bash
 git clone https://github.com/vauzher/Movies-Streaming-App.git
 cd netflix-clone
-2. Create and activate virtual environment
-bash
+```
+3. Create and activate virtual environment
+```bash
 python -m venv venv
 source venv/bin/activate # On Windows: venv\Scripts\activate
-3. Install dependencies
-bash
+```
+4. Install dependencies
+```bash
 pip install -r requirements.txt
-4. Apply migrations
-bash
+```
+5. Apply migrations
+```bash
 python manage.py migrate
-5. Create superuser (admin)
-bash
+```
+6. Create superuser (admin)
+```bash
 python manage.py createsuperuser
-6. Run development server
-bash
+```
+7. Run development server
+```bash
 python manage.py runserver
+```
 
 
 ## 💡 Usage
