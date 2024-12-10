@@ -1,0 +1,5 @@
+Django==5.0.7
+Pillow==10.2.0
+django-crispy-forms==2.1
+crispy-bootstrap5==2024.2
+python-dotenv==1.0.1
